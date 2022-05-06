@@ -14,13 +14,25 @@ class AuthController extends Controller
 {
     private const SIGNUP_VALIDATION_RULES = [
         'name' => 'required|string',
-        'email' => 'required|string|email',
+        'email' => 'required|string|email|unique:users',
         'password' => 'required|string',
+    ];
+
+    private const SIGNUP_VALIDATION_MESSAGES = [
+        'name.required' => 'Please provide name',
+        'email.unique' => 'Email already exists',
+        'email.required' => 'Please provide email',
+        'password.required' => 'Please provide password',
     ];
 
     private const LOGIN_VALIDATION_RULES = [
         'email' => 'required|string|email',
         'password' => 'required|string',
+    ];
+
+    private const LOGIN_VALIDATION_MESSAGES = [
+        'email.required' => 'Please provide email',
+        'password.required' => 'Please provide password',
     ];
 
     private const TOKEN_NAME = 'API Token';
@@ -29,9 +41,16 @@ class AuthController extends Controller
 
     public function signup(Request $request, User $userModel): JsonResponse
     {
-        $validator = Validator($request->all(), self::SIGNUP_VALIDATION_RULES);
-        if ($validator->fails()) {
-            return response()->json(['message' => 'Bad Request'], 400);
+        $errorMessages = $this->validateRequest(
+            $request->all(),
+            self::SIGNUP_VALIDATION_RULES,
+            self::SIGNUP_VALIDATION_MESSAGES);
+
+        if ($errorMessages) {
+            return response()->json([
+                'message' => 'Bad Request',
+                'errors' => $errorMessages
+            ], 400);
         }
 
         $newUser = $userModel->create([
@@ -47,7 +66,7 @@ class AuthController extends Controller
         return response()->json(
             [
                 'message' => 'Successfully created user!',
-                'token' => $token->accessToken,
+                'token' => $token->plainTextToken,
                 'token_type' => self::TOKEN_TYPE,
             ],
             201
@@ -56,9 +75,16 @@ class AuthController extends Controller
 
     public function login(Request $request): JsonResponse
     {
-        $validator = Validator($request->all(), self::LOGIN_VALIDATION_RULES);
-        if ($validator->fails()) {
-            return response()->json(['message' => 'Bad Request'], 400);
+        $errorMessages = $this->validateRequest(
+            $request->all(),
+            self::LOGIN_VALIDATION_RULES,
+            self::LOGIN_VALIDATION_MESSAGES);
+
+        if ($errorMessages) {
+            return response()->json([
+                'message' => 'Bad Request',
+                'errors' => $errorMessages
+            ], 400);
         }
 
         $login = $request->input('email');
@@ -84,5 +110,12 @@ class AuthController extends Controller
                 'token_type' => self::TOKEN_TYPE,
             ]
         );
+    }
+
+    private function validateRequest(array $params, array $rules, array $messages): array
+    {
+        $validator = Validator($params, $rules, $messages);
+
+        return $validator->messages()->all();
     }
 }
