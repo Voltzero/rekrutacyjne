@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::middleware('auth:sanctum')->get('/', function () {
     return 'rekrutacyjne api';
 });

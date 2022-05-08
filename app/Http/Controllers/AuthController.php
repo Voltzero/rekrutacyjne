@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -16,21 +18,14 @@ class AuthController extends Controller
         'password' => 'required|string',
     ];
 
-    private const SIGNUP_VALIDATION_MESSAGES = [
-        'name.required' => 'Please provide name',
-        'email.unique' => 'Email already exists',
-        'email.required' => 'Please provide email',
-        'password.required' => 'Please provide password',
-    ];
-
     private const LOGIN_VALIDATION_RULES = [
         'email' => 'required|string|email',
         'password' => 'required|string',
     ];
 
-    private const LOGIN_VALIDATION_MESSAGES = [
-        'email.required' => 'Please provide email',
-        'password.required' => 'Please provide password',
+    private const VALIDATION_MESSAGES = [
+        'required' => ':attribute field is required',
+        'unique' => 'Email already exists',
     ];
 
     private const TOKEN_NAME = 'API Token';
@@ -39,23 +34,19 @@ class AuthController extends Controller
 
     public function signup(Request $request, User $userModel): JsonResponse
     {
-        $errorMessages = $this->validateRequest(
+        $validator = Validator::make(
             $request->all(),
             self::SIGNUP_VALIDATION_RULES,
-            self::SIGNUP_VALIDATION_MESSAGES);
+            self::VALIDATION_MESSAGES);
 
-        if ($errorMessages) {
+        if ($validator->fails()) {
             return response()->json([
                 'message' => 'Bad Request',
-                'errors' => $errorMessages
+                'errors' => $validator->errors()
             ], 400);
         }
 
-        $newUser = $userModel->create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
-        ]);
+        $newUser = $userModel->create($validator->validated());
 
         $newUser->save();
 
@@ -73,25 +64,19 @@ class AuthController extends Controller
 
     public function login(Request $request): JsonResponse
     {
-        $errorMessages = $this->validateRequest(
+        $validator = Validator::make(
             $request->all(),
             self::LOGIN_VALIDATION_RULES,
-            self::LOGIN_VALIDATION_MESSAGES);
+            self::VALIDATION_MESSAGES);
 
-        if ($errorMessages) {
+        if ($validator->fails()) {
             return response()->json([
                 'message' => 'Bad Request',
-                'errors' => $errorMessages
+                'errors' => $validator->errors()
             ], 400);
         }
 
-        $login = $request->input('email');
-        $password = $request->input('password');
-
-        $credentials = array(
-            'email' => $login,
-            'password' => $password
-        );
+        $credentials = $validator->validated();
 
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -108,12 +93,5 @@ class AuthController extends Controller
                 'token_type' => self::TOKEN_TYPE,
             ]
         );
-    }
-
-    private function validateRequest(array $params, array $rules, array $messages): array
-    {
-        $validator = Validator($params, $rules, $messages);
-
-        return $validator->messages()->all();
     }
 }
