@@ -69,13 +69,16 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
+    public function deleteProduct(Product $product): JsonResponse
+    {
+        $product->delete();
+
+        return response()->json(['message' => 'Deleted']);
+    }
+
     public function showProduct(Product $product): JsonResponse
     {
-        return response()->json(
-            [
-                'product' => $product,
-            ]
-        );
+        return response()->json($product);
     }
 
     public function showAllProducts(): JsonResponse
