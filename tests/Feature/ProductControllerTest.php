@@ -29,27 +29,20 @@ class ProductControllerTest extends TestCase
         $response->assertStatus(201);
     }
 
-//    public function test_update_product(): void
-//    {
-//        $productData = array(
-//            'name' => 'Update Product',
-//            'quantity' => 100,
-//            'price' => '99,99'
-//        );
-//        $token = User::first()->createToken('Bearer')->plainTextToken;
-//
-//        $productResponse = $this->post('/api/product', $productData, [
-//            'HTTP_AUTHORIZATION' => "Bearer ${token}"
-//        ]);
-//        $productId = $productResponse->id;
-//        $response = $this->put("/api/product/${$productId}", [
-//            'name' => 'changed name',
-//            'quantity' => 122,
-//            'price' => 12
-//        ], [
-//            'HTTP_AUTHORIZATION' => "Bearer ${token}"
-//        ]);
-//
-//        $response->assertStatus(200);
-//    }
+    public function test_update_product(): void
+    {
+        $token = User::first()->createToken('Bearer')->plainTextToken;
+
+        $product = Product::factory()->count(1)->create();
+
+        $response = $this->put("/api/product/1", [
+            'name' => 'changed name',
+            'quantity' => 122,
+            'price' => "12"
+        ], [
+            'HTTP_AUTHORIZATION' => "Bearer ${token}"
+        ]);
+
+        $response->assertStatus(200);
+    }
 }
