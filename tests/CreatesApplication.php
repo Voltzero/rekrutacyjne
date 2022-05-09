@@ -29,6 +29,7 @@ trait CreatesApplication
 
     private function prepareForTests(): void
     {
+        Artisan::call('db:wipe');
         Artisan::call('migrate');
         Artisan::call('db:seed');
     }

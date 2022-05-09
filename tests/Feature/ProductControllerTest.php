@@ -2,26 +2,54 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Product;
+use App\Models\User;
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
 {
     /**
-     * A basic feature test example.
+     * Testing product create
      *
      * @return void
      */
-    public function testCreateProduct()
+    public function test_create_product(): void
     {
-        $userData = array(
-            'name' => 'Test User',
-            'email' => 'test@email.com',
-            'password' => 'test123'
+        $productData = array(
+            'name' => 'Test Product',
+            'quantity' => 100,
+            'price' => '99,99'
         );
-        $response = $this->post('/api/auth/signup', $userData);
+        $token = User::first()->createToken('Bearer')->plainTextToken;
+
+        $response = $this->post('/api/product', $productData, [
+            'HTTP_AUTHORIZATION' => "Bearer ${token}"
+        ]);
 
         $response->assertStatus(201);
     }
+
+//    public function test_update_product(): void
+//    {
+//        $productData = array(
+//            'name' => 'Update Product',
+//            'quantity' => 100,
+//            'price' => '99,99'
+//        );
+//        $token = User::first()->createToken('Bearer')->plainTextToken;
+//
+//        $productResponse = $this->post('/api/product', $productData, [
+//            'HTTP_AUTHORIZATION' => "Bearer ${token}"
+//        ]);
+//        $productId = $productResponse->id;
+//        $response = $this->put("/api/product/${$productId}", [
+//            'name' => 'changed name',
+//            'quantity' => 122,
+//            'price' => 12
+//        ], [
+//            'HTTP_AUTHORIZATION' => "Bearer ${token}"
+//        ]);
+//
+//        $response->assertStatus(200);
+//    }
 }

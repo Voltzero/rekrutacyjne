@@ -27,7 +27,7 @@ Route::prefix('product')->group(
         Route::get('', [ProductController::class, 'showAllProducts']);
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('', [ProductController::class, 'createProduct']);
-            Route::post('{product}/update', [ProductController::class, 'updateProduct']);
+            Route::put('{product}', [ProductController::class, 'updateProduct']);
             Route::delete('{product}', [ProductController::class, 'deleteProduct']);
         });
     }
