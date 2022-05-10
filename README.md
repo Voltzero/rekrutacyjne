@@ -21,7 +21,7 @@ Testy uruchamiane są przy uruchomionym projekcie za pomocą polecenia ```./vend
 
 W repozytorium załączony jest plik ```rekrutacyjny.postman_collection.json``` który można zaimportować do Postmana, jest
 to gotowa kolekcja zapytań do api, dzięki Postmanowi można również wygenerować dokumentację.
-Opiszę po krótce możliwe zapytania tutaj.
+Opiszę pokrótce możliwe zapytania tutaj.
 
 ## Uzyskiwanie tokenu
 
