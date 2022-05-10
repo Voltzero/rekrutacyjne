@@ -67,6 +67,56 @@ Zapytania dotyczące produktów wykonujemy pod uri ```localhost/api/product/```
 }
 ```
 
+## Opis API
+
+W repozytorium załączony jest plik ```rekrutacyjny.postman_collection.json``` który można zaimportować do Postmana, jest
+to gotowa kolekcja zapytań do api, dzięki Postmanowi można również wygenerować dokumentację.
+Opiszę po krótce możliwe zapytania tutaj.
+
+## Uzyskiwanie tokenu
+
+Aby uzyskać token, wykonujemy zapytanie ```POST``` pod uri ```localhost/api/auth/login``` z następującym Body:
+
+```
+{
+    "email": "user@user.com",
+    "password": "password"
+}
+```
+
+To dane do użytkownika, który został zaseedowany do bazy. W odpowiedzi otrzymamy token pozwalający na wykonywanie
+operacji tworzenia/modyfikacji/usunięcia na produktach.
+
+### Otrzymany token należy umieścić w zakładce Authorization, typ tokenu to Bearer
+
+Możemy utworzyć własnego użytkownika wykonujemy zapytanie ```POST``` pod uri ```localhost/api/auth/signup``` z
+następującym Body:
+
+```
+{
+    "email": "user@email.com",
+    "name": "User Name",
+    "password": "password"
+}
+```
+
+## Produkty
+
+Zapytania dotyczące produktów wykonujemy pod uri ```localhost/api/product/```
+
+### Tworzenie produktu
+
+```POST``` z Body:
+
+```
+{
+    "name": "Nazwa Produkty",
+    "quantity": 100,
+    "price": "99,99",
+    "code": "A2EQW900"
+}
+```
+
 ### Modyfikacja produktu
 
 ```PUT``` pod  ```localhost/api/product/{id}``` z Body:
