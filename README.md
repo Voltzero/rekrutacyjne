@@ -57,7 +57,7 @@ Zapytania dotyczące produktów wykonujemy pod uri ```localhost/api/product/```
 ```
 {
     "name": "Nazwa Produkty",
-    "quantity": "100",
+    "quantity": 100,
     "price": "99,99",
     "code": "A2EQW900"
 }
@@ -70,7 +70,7 @@ Zapytania dotyczące produktów wykonujemy pod uri ```localhost/api/product/```
 ```
 {
     "name": "Nazwa Produkty",
-    "quantity": "100",
+    "quantity": 100,
     "price": "99,99",
     "code": "A2EQW900"
 }
@@ -79,6 +79,21 @@ Zapytania dotyczące produktów wykonujemy pod uri ```localhost/api/product/```
 ### Lista produktów
 
 ```GET``` pod  ```localhost/api/product/```
+
+Lista produktów może być filtrowana, dostępne filtry to:
+```priceBelow```, ```priceAbove```, ```name```, ```quantityAbove```, ```quantityBelow```, ```code```
+Przykład Body:
+
+```
+{
+    "name": "niepełnanazwa",
+    "quantityAbove": 10,
+    "quantityBelow": 20,
+    "priceAbove": 10,
+    "priceBelow": 50,
+    "code": "PEŁNYKOD"
+}
+```
 
 ### Produkt o konkretnym id
 

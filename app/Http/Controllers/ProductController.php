@@ -8,6 +8,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
@@ -83,8 +84,34 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    public function showAllProducts(): Paginator
+    public function showAllProducts(Request $request, Product $product): Paginator
     {
-        return Product::query()->simplePaginate(10);
+        $products = $product->query();
+
+        if ($request->has('priceBelow')) {
+            $products->where('price', '<=', $request->input('priceBelow'));
+        }
+
+        if ($request->has('priceAbove')) {
+            $products->where('price', '>=', $request->input('priceAbove'));
+        }
+
+        if ($request->has('code')) {
+            $products->where('code', 'like', $request->input('code'));
+        }
+
+        if ($request->has('quantityBelow')) {
+            $products->where('quantity', '<=', $request->input('quantityBelow'));
+        }
+
+        if ($request->has('quantityAbove')) {
+            $products->where('quantity', '>=', $request->input('quantityAbove'));
+        }
+
+        if ($request->has('name')) {
+            $phrase = '%' . Str::lower($request->input('name')) . '%';
+            $products->where('name', 'like', $phrase);
+        }
+        return $products->simplePaginate(10);
     }
 }
