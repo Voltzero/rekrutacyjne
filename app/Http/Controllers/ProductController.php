@@ -16,6 +16,7 @@ class ProductController extends Controller
         'name' => 'required|string',
         'quantity' => 'required|integer',
         'price' => 'required|string',
+        'code' => 'string',
     ];
 
     private const PRODUCT_VALIDATION_MESSAGES = [

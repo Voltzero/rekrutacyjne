@@ -1,64 +1,89 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## Instalacja
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Po sklonowaniu repozytorium należy wykonać następujące kroki:
 
-## About Laravel
+- Utworzyć plik ```.env``` i skopiować do niego zawartość pliku ```.env.example```
+- W katalogu projektu wykonujemy polecenie ```composer install```
+- Następnie ```./vendor/bin/sail up```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Migracja i seedowanie
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Migracje wykonujemy poleceniem ```./vendor/bin/sail artisan migrate```
+- Następnie seedujemy bazę danych ```./vendor/bin/sail artisan db:seed```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Teraz możemy wykonywać zapytania do API i uzyskać token uwierzytelniający.
 
-## Learning Laravel
+## Opis API
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+W repozytorium załączony jest plik ```rekrutacyjny.postman_collection.json``` który można zaimportować do Postmana, jest
+to gotowa kolekcja zapytań do api, dzięki Postmanowi można również wygenerować dokumentację.
+Opiszę po krótce możliwe zapytania tutaj.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Uzyskiwanie tokenu
 
-## Laravel Sponsors
+Aby uzyskać token, wykonujemy zapytanie ```POST``` pod uri ```localhost/api/auth/login``` z następującym Body:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```
+{
+    "email": "user@user.com",
+    "password": "password"
+}
+```
 
-### Premium Partners
+To dane do użytkownika, który został zaseedowany do bazy. W odpowiedzi otrzymamy token pozwalający na wykonywanie
+operacji tworzenia/modyfikacji/usunięcia na produktach.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### Otrzymany token należy umieścić w zakładce Authorization, typ tokenu to Bearer
 
-## Contributing
+Możemy utworzyć własnego użytkownika wykonujemy zapytanie ```POST``` pod uri ```localhost/api/auth/signup``` z
+następującym Body:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+{
+    "email": "user@email.com",
+    "name": "User Name",
+    "password": "password"
+}
+```
 
-## Code of Conduct
+## Produkty
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Zapytania dotyczące produktów wykonujemy pod uri ```localhost/api/product/```
 
-## Security Vulnerabilities
+### Tworzenie produktu
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```POST``` z Body:
 
-## License
+```
+{
+    "name": "Nazwa Produkty",
+    "quantity": "100",
+    "price": "99,99",
+    "code": "A2EQW900"
+}
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Modyfikacja produktu
+
+```PUT``` pod  ```localhost/api/product/{id}``` z Body:
+
+```
+{
+    "name": "Nazwa Produkty",
+    "quantity": "100",
+    "price": "99,99",
+    "code": "A2EQW900"
+}
+```
+
+### Lista produktów
+
+```GET``` pod  ```localhost/api/product/```
+
+### Produkt o konkretnym id
+
+```GET``` pod  ```localhost/api/product/{id}```
+
+### Usunięcie produktu
+
+```DELETE``` pod  ```localhost/api/product/{id}```
