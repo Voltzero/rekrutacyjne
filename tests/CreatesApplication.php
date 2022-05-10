@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Support\Facades\Artisan;
 
 trait CreatesApplication
 {
@@ -13,10 +14,28 @@ trait CreatesApplication
      */
     public function createApplication()
     {
-        $app = require __DIR__.'/../bootstrap/app.php';
+        $app = require __DIR__ . '/../bootstrap/app.php';
 
         $app->make(Kernel::class)->bootstrap();
 
         return $app;
+    }
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->prepareForTests();
+    }
+
+    private function prepareForTests(): void
+    {
+        Artisan::call('db:wipe');
+        Artisan::call('migrate');
+        Artisan::call('db:seed');
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
     }
 }
