@@ -14,6 +14,16 @@ class Product extends Model
         'name',
         'quantity',
         'price',
+        'code',
+    ];
+
+    protected $hidden = [
+        'deleted_at'
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i',
+        'updated_at' => 'datetime:Y-m-d H:i',
     ];
 
     public function __construct(array $attributes = [])

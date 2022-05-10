@@ -18,8 +18,11 @@ class ProductFactory extends Factory
     {
         return [
             'name' => $this->faker->word(),
-            'quantity' => 33,
-            'price' => '44.44'
+            'quantity' => $this->faker->numberBetween(1, 100),
+            'price' => $this->faker->numerify('%%.%#'),
+            'code' => $this->faker->numerify('##########'),
+            'created_at' => now(),
+            'updated_at' => now()
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -81,10 +82,8 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    public function showAllProducts(): JsonResponse
+    public function showAllProducts(): Paginator
     {
-        $products = Product::query()->get()->all();
-
-        return response()->json(ProductResource::collection($products));
+        return Product::query()->simplePaginate(10);
     }
 }
