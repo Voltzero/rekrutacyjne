@@ -13,6 +13,10 @@ Po sklonowaniu repozytorium należy wykonać następujące kroki:
 
 Teraz możemy wykonywać zapytania do API i uzyskać token uwierzytelniający.
 
+## Testy
+
+Testy uruchamiane są przy uruchomionym projekcie za pomocą polecenia ```./vendor/bin/sail artisan test```
+
 ## Opis API
 
 W repozytorium załączony jest plik ```rekrutacyjny.postman_collection.json``` który można zaimportować do Postmana, jest
